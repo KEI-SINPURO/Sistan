@@ -139,11 +139,6 @@
           <span>🔥</span>
           <span>今日 <span id="today-count-badge">0</span> 問</span>
         </div>
-        <button onclick="openImportModal()" title="単語データの追加" class="bg-white/20 hover:bg-white/30 p-2 rounded-full transition">
-          <svg class="w-4 h-4 text-white" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4"/>
-          </svg>
-        </button>
       </div>
     </header>
 
@@ -402,20 +397,6 @@
           </div>
         </div>
 
-        <!-- 単語データ追加カード -->
-        <div class="bg-white rounded-3xl p-4 shadow-card border border-gray-100 space-y-3">
-          <div class="flex items-center gap-2">
-            <span class="text-xl">📥</span>
-            <div>
-              <h3 class="font-extrabold text-sm text-gray-800">単語データの追加・インポート</h3>
-              <p class="text-xs text-gray-500 font-bold">追加の単語リストを貼り付けて登録できます</p>
-            </div>
-          </div>
-          <button onclick="openImportModal()" class="w-full py-2.5 bg-mikan-100 hover:bg-mikan-200 text-mikan-700 font-extrabold text-sm rounded-xl transition">
-            ＋ 単語テキストを追加する
-          </button>
-        </div>
-
         <!-- リセットエリア -->
         <div class="bg-white rounded-3xl p-4 shadow-card border border-rose-100 space-y-3">
           <h3 class="font-extrabold text-sm text-rose-600">学習データの初期化</h3>
@@ -449,7 +430,7 @@
           <path stroke-linecap="round" stroke-linejoin="round" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/>
           <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
         </svg>
-        <span class="text-[11px]">設定・追加</span>
+        <span class="text-[11px]">設定</span>
       </button>
     </nav>
 
@@ -698,26 +679,7 @@
       </div>
     </div>
 
-    <!-- ==================== MODAL 1: 単語データ追加インポートモーダル ==================== -->
-    <div id="import-modal" class="hidden fixed inset-0 bg-black/50 backdrop-blur-xs z-50 flex items-center justify-center p-4">
-      <div class="bg-white w-full max-w-md rounded-3xl p-5 shadow-2xl space-y-4 animate-pop">
-        <div class="flex items-center justify-between">
-          <h3 class="font-black text-lg text-gray-800">単語データの追加</h3>
-          <button onclick="closeImportModal()" class="p-1.5 rounded-full bg-gray-100 text-gray-500 font-bold">✕</button>
-        </div>
-        <p class="text-xs font-bold text-gray-600 leading-relaxed">
-          追加したい単語リスト（例：<code class="bg-gray-100 px-1 rounded">2028	word	意味</code>）を下に貼り付けて「追加する」を押すと、辞書に即座に反映されます。
-        </p>
-        <textarea id="import-textarea" rows="6" placeholder="2028&#9;example&#9;例、手本" class="w-full p-3 border-2 border-orange-200 focus:border-mikan-500 rounded-2xl text-xs font-bold outline-none"></textarea>
-        <div id="import-feedback" class="hidden text-xs font-extrabold text-emerald-600 bg-emerald-50 p-2.5 rounded-xl"></div>
-        <div class="flex gap-2">
-          <button onclick="closeImportModal()" class="flex-1 py-2.5 bg-gray-100 text-gray-600 font-extrabold text-sm rounded-xl">閉じる</button>
-          <button onclick="processImportData()" class="flex-1 py-2.5 bg-mikan-500 text-white font-black text-sm rounded-xl shadow-btn-orange btn-push">追加する</button>
-        </div>
-      </div>
-    </div>
-
-    <!-- ==================== MODAL 2: リセット確認モーダル ==================== -->
+    <!-- ==================== MODAL: リセット確認モーダル ==================== -->
     <div id="reset-modal" class="hidden fixed inset-0 bg-black/50 backdrop-blur-xs z-50 flex items-center justify-center p-4">
       <div class="bg-white w-full max-w-sm rounded-3xl p-5 shadow-2xl space-y-4 animate-pop text-center">
         <div class="text-4xl">⚠️</div>
@@ -2770,7 +2732,6 @@
 
     // ==================== 状態管理 & ストレージ ====================
     const STORAGE_KEY_PROGRESS = 'sistan_mikan_progress_v2';
-    const STORAGE_KEY_EXTRA_WORDS = 'sistan_mikan_extra_words_v2';
     const STORAGE_KEY_SETTINGS = 'sistan_mikan_settings_v2';
     const STORAGE_KEY_STATS = 'sistan_mikan_stats_v2';
     const STORAGE_KEY_RANGE = 'sistan_mikan_custom_range_v2';
@@ -3245,14 +3206,6 @@
       const baseWords = parseWordLines(RAW_SISTANG_DATA);
       const map = new Map();
       baseWords.forEach(w => map.set(w.id, w));
-
-      try {
-        const extraRaw = localStorage.getItem(STORAGE_KEY_EXTRA_WORDS);
-        if (extraRaw) {
-          const extraWords = JSON.parse(extraRaw);
-          extraWords.forEach(w => map.set(w.id, { id: w.id, en: w.en, ja: w.ja }));
-        }
-      } catch (e) {}
 
       WORDS = Array.from(map.values()).sort((a, b) => a.id - b.id);
       WORD_MAP = map;
@@ -4345,63 +4298,6 @@
         renderWordList(true);
       } else if (tabName === 'home') {
         updateDashboardUI();
-      }
-    }
-
-    // ==================== 単語追加インポートモーダル ====================
-    function openImportModal() {
-      playSound('tap');
-      const feedback = document.getElementById('import-feedback');
-      feedback.classList.add('hidden');
-      feedback.textContent = '';
-      document.getElementById('import-modal').classList.remove('hidden');
-    }
-
-    function closeImportModal() {
-      document.getElementById('import-modal').classList.add('hidden');
-    }
-
-    function processImportData() {
-      const textarea = document.getElementById('import-textarea');
-      const feedback = document.getElementById('import-feedback');
-      const parsed = parseWordLines(textarea.value);
-
-      if (parsed.length === 0) {
-        feedback.className = 'text-xs font-extrabold text-rose-600 bg-rose-50 p-2.5 rounded-xl';
-        feedback.textContent = '有効な単語データが見つかりませんでした。「番号[Tab]英単語[Tab]意味」の形式で入力してください。';
-        feedback.classList.remove('hidden');
-        return;
-      }
-
-      let extraMap = new Map();
-      try {
-        const existingRaw = localStorage.getItem(STORAGE_KEY_EXTRA_WORDS);
-        if (existingRaw) {
-          JSON.parse(existingRaw).forEach(w => extraMap.set(w.id, w));
-        }
-      } catch (e) {}
-
-      parsed.forEach(w => {
-        WORD_MAP.set(w.id, w);
-        extraMap.set(w.id, w);
-      });
-
-      WORDS = Array.from(WORD_MAP.values()).sort((a, b) => a.id - b.id);
-
-      try {
-        localStorage.setItem(STORAGE_KEY_EXTRA_WORDS, JSON.stringify(Array.from(extraMap.values())));
-      } catch (e) {}
-
-      playSound('correct');
-      textarea.value = '';
-      feedback.className = 'text-xs font-extrabold text-emerald-600 bg-emerald-50 p-2.5 rounded-xl';
-      feedback.textContent = `✨ ${parsed.length} 語の単語を追加・更新しました！（合計 ${WORDS.length} 語）`;
-      feedback.classList.remove('hidden');
-
-      syncCustomRangeUI();
-      updateDashboardUI();
-      if (!document.getElementById('view-wordlist').classList.contains('hidden')) {
-        renderWordList(true);
       }
     }
 
